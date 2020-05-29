@@ -38,7 +38,7 @@ export let config: Config = {
 		browser.manage().window().maximize();
 		browser.manage().timeouts().implicitlyWait(browser.params.driver_timeout_implicit);
 
-		// Usage to set another global file outside here. Also, add module.exports : {}
+		// Usage to set another global file outside here. Add module.exports : {} to a separate file
 		// Usage in ts file => browser.appGlobal.super_calculator_base_url;
 		// browser.appGlobal = require('');
 	},
