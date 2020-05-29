@@ -34,14 +34,12 @@ export class DomUtils {
 	}
 
 	public static isAtLeastOneDOMElementIsPresent(pageSource: string, cssQuerySelectors: string[]): boolean {
-		let i: number = 0;
 		for (let selector of cssQuerySelectors) {
 			try {
 				return DomUtils.getElement(pageSource, selector) !== null;
 			} catch (error) {
 				LogUtils.debug(`Trying with next Selector`);
 			}
-			++i;
 		}
 		return false;
 	}
