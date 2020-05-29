@@ -1,0 +1,28 @@
+{
+	"name": "sample-protractor-automation",
+	"version": "1.0.0",
+	"description": "Sample Learning Project with Protractor",
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc",
+		"clean": "rimraf out/* log/*",
+		"pretest": "npm run clean && npm run build",
+		"test": "protractor out/conf.js --suite amazonSuite"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"jasmine": "^3.5.0",
+		"jsdom": "^16.2.2",
+		"lodash": "^4.17.15",
+		"log4js": "^6.2.1",
+		"protractor": "^7.0.0"
+	},
+	"devDependencies": {
+		"@types/jasmine": "^3.5.10",
+		"@types/jsdom": "^16.2.3",
+		"@types/lodash": "^4.14.152",
+		"@types/node": "^14.0.5",
+		"@types/typescript": "^2.0.0"
+	}
+}
