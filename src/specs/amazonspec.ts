@@ -1,5 +1,6 @@
 import { browser } from "protractor";
 import { AmazonPage } from "../pageobjects/pages/amazonpage";
+import { LogUtils } from "../utils/logutils";
 
 var amazonPage: AmazonPage;
 
@@ -17,8 +18,13 @@ describe('Amazon Tests - ', () => {
 	});
 
 	afterAll(async () => {
-		await amazonPage.close();
-		await browser.quit();
+		try {
+			await amazonPage.close();
+			await browser.quit();
+		}
+		catch (err) {
+			LogUtils.debug(err);
+		}
 	});
 
 });

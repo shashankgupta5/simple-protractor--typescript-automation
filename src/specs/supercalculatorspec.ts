@@ -1,5 +1,7 @@
 import { browser } from "protractor";
 import { SuperCalculatorPage } from "../pageobjects/pages/supercalculatorpage";
+import { Logger } from "log4js";
+import { LogUtils } from "../utils/logutils";
 
 var superCalculatorPage: SuperCalculatorPage;
 
@@ -20,8 +22,13 @@ describe('Super Calculator Tests - ', () => {
 	});
 
 	afterAll(async () => {
-		await superCalculatorPage.close();
-		await browser.quit();
+		try {
+			await superCalculatorPage.close();
+			await browser.quit();
+		}
+		catch (err) {
+			LogUtils.debug(err);
+		}
 	});
 
 });

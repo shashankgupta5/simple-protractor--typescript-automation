@@ -5,11 +5,11 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "tsc",
-		"clean": "rimraf out/* log/*",
+		"clean": "rimraf out/* log/* results/*",
 		"pretest": "npm run clean && npm run build",
-		"test": "protractor out/conf.js --suite amazonSuite"
+		"test": "protractor out/conf.js --suite superCalculatorSuite"
 	},
-	"author": "",
+	"author": "Shashank Gupta",
 	"license": "ISC",
 	"dependencies": {
 		"jasmine": "^3.5.0",
@@ -23,6 +23,7 @@
 		"@types/jsdom": "^16.2.3",
 		"@types/lodash": "^4.14.152",
 		"@types/node": "^14.0.5",
-		"@types/typescript": "^2.0.0"
+		"@types/typescript": "^2.0.0",
+		"protractor-jasmine2-html-reporter": "0.0.7"
 	}
 }

@@ -1,5 +1,6 @@
 log/*
+results/*
 node_modules/*
 out/*
-.vscode/*
 my_notes.md
+package-lock.json

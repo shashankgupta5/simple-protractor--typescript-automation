@@ -2,7 +2,9 @@ import { Config, browser } from "protractor"
 
 export let config: Config = {
 	seleniumAddress: 'http://localhost:4444/wd/hub',
-	framework: 'jasmine',
+
+	framework: 'jasmine2',
+
 	capabilities: {
 		browserName: 'chrome',
 		chromeOptions: {
@@ -19,15 +21,19 @@ export let config: Config = {
 		// marionette: true,
 		// acceptSslCerts : true
 	},
+
 	jasmineNodeOpts: {
 		showColors: true,
-		silent: true
+		silent: true,
+		defaultTimeoutInterval: 25000
 	},
+
 	suites: {
 		superCalculatorSuite: ['./specs/supercalculatorspec.js'],
-		amazonSuite: ['./specs/amazonspec.js'],
+		// amazonSuite: ['./specs/amazonspec.js'],
 		// allSuite: ['./specs/*.js', './specs/*.js']
 	},
+
 
 	onPrepare: () => {
 		// Usage = (global as any).isAngularSite(false); // For Non Angular Sites
@@ -41,6 +47,12 @@ export let config: Config = {
 		// Usage to set another global file outside here. Add module.exports : {} to a separate file
 		// Usage in ts file => browser.appGlobal.super_calculator_base_url;
 		// browser.appGlobal = require('');
+
+		var Jasmine2HtmlReporter = require('protractor-jasmine2-html-reporter');
+		jasmine.getEnv().addReporter(new Jasmine2HtmlReporter({
+			savePath: 'results',
+			takeScreenshotsOnlyOnFailures: true
+		}));
 	},
 
 	params: {
@@ -49,6 +61,5 @@ export let config: Config = {
 		driver_timeout_explicit: 10000,
 		driver_timeout_implicit: 5000
 	}
+
 }
-
-
