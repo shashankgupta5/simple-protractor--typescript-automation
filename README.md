@@ -13,5 +13,6 @@ Hoping to improve further with time.
 4. Once the test execution is complete, the report can be seen under ./results folder.
 
 ## What's New
-v02 - Add reporter and support (.vscode) to debug ts code. Simply add a breakpoint and click F5.
-v0.1 - Pilot
+v0.2 - Add reporter and support (.vscode) to debug ts code. Simply add a breakpoint and click F5.
+
+v0.1 - Pilot.
