@@ -1,7 +1,7 @@
 import { browser } from "protractor";
-import { SuperCalculatorPage } from "../pageobjects/pages/supercalculatorpage";
+import { SuperCalculatorPage } from "../pageobjects/pages/SuperCalulatorPage";
 import { Logger } from "log4js";
-import { LogUtils } from "../utils/logutils";
+import { LogUtils } from "../utils/LogUtils";
 
 var superCalculatorPage: SuperCalculatorPage;
 

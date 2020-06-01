@@ -1,7 +1,7 @@
 import { browser, element, by, ElementFinder, ElementArrayFinder } from "protractor";
-import { WaitTool } from "./waittool";
-import { DomUtils } from "../utils/domutils";
-import { LogUtils } from "../utils/logutils";
+import { WaitTool } from "./WaitTool";
+import { DomUtils } from "../utils/DomUtils";
+import { LogUtils } from "../utils/LogUtils";
 
 export abstract class DriverHelper extends WaitTool {
 
@@ -34,16 +34,6 @@ export abstract class DriverHelper extends WaitTool {
 	public async domContainsText(text: string): Promise<boolean> {
 		let pageSource: string = await browser.getPageSource();
 		return pageSource.indexOf(text) > -1;
-	}
-
-	public static isElementInDOM(pageSource: string, cssQuerySelector: string): boolean {
-		let document = DomUtils.getHTMLStringAsDocument(pageSource);
-		try {
-			DomUtils.getElementByDocument(document, cssQuerySelector);
-			return true;
-		} catch (error) {
-			return false;
-		}
 	}
 
 	public isElementInDOM = async (cssSelector: string): Promise<boolean> => {
@@ -85,6 +75,14 @@ export abstract class DriverHelper extends WaitTool {
 	// Page-related actions
 	//=====
 
+	public getPageText = async (): Promise<String | null> => {
+		return (await this.getPageBody()).textContent;
+	}
+
+	public getPageBody = async (): Promise<HTMLElement> => {
+		return DomUtils.getHTMLStringAsDocument(await browser.getPageSource()).body;
+	}
+
 	public failWithErrorAndIncludePageText(message: string) {
 		let text: string = `The Page DOM text was - 
 												${message}
@@ -95,14 +93,6 @@ export abstract class DriverHelper extends WaitTool {
 	public failWithMessage = async (message: string) => {
 		LogUtils.info(message);
 		throw new Error(message);
-	}
-
-	public getPageText = async (): Promise<String | null> => {
-		return (await this.getPageBody()).textContent;
-	}
-
-	public getPageBody = async (): Promise<HTMLElement> => {
-		return DomUtils.getHTMLStringAsDocument(await browser.getPageSource()).body;
 	}
 
 }

@@ -1,6 +1,6 @@
 import { browser, element, until, ExpectedConditions, by, ElementFinder } from "protractor";
-import { DomUtils } from "../utils/domutils";
-import { LogUtils } from "../utils/logutils";
+import { DomUtils } from "../utils/DomUtils";
+import { LogUtils } from "../utils/LogUtils";
 
 const TIMEOUT: number = browser.params.driver_timeout_explicit;
 
@@ -48,7 +48,7 @@ export abstract class WaitTool {
 		let domElementIsPresent = async () => {
 			try {
 				let pageSource: string = await browser.getPageSource();
-				if (DomUtils.getElement(pageSource, cssSelector) !== null) {
+				if (DomUtils.getElement(pageSource, cssSelector) != null) {
 					LogUtils.debug(`DOM Element is now Present`);
 					return true;
 				}
@@ -64,7 +64,7 @@ export abstract class WaitTool {
 		let elementToBeHidden = async () => {
 			try {
 				let dom: string = await browser.getPageSource()
-				if (DomUtils.getElement(dom, cssSelector) === null) {
+				if (DomUtils.getElement(dom, cssSelector) == null) {
 					LogUtils.debug(`DOM Element was hidden now`);
 					return true;
 				}

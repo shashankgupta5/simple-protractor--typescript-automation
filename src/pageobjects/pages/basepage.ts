@@ -1,8 +1,8 @@
-import { ComponentPage } from "./componentpage";
 import { browser } from "protractor";
-import { LogUtils } from "../../utils/logutils";
+import { LogUtils } from "../../utils/LogUtils";
+import { DriverHelper } from "../../helper/DriverHelper";
 
-export abstract class BasePage extends ComponentPage {
+export abstract class BasePage extends DriverHelper {
 
 	public async verify(title: string) {
 		await this.waitUntilPageLoaded();

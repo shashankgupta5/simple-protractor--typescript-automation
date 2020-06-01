@@ -1,6 +1,6 @@
 import { browser } from "protractor";
-import { AmazonPage } from "../pageobjects/pages/amazonpage";
-import { LogUtils } from "../utils/logutils";
+import { AmazonPage } from "../pageobjects/pages/AmazonPage";
+import { LogUtils } from "../utils/LogUtils";
 
 var amazonPage: AmazonPage;
 
