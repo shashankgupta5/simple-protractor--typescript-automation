@@ -16,7 +16,7 @@ export class DomUtils {
 		let elements = DomUtils.getElements(document, cssQuerySelector);
 
 		if (elements.length === 0) {
-			let failure: string = `Could not find Element in source, located by ${cssQuerySelector}`;
+			let failure: string = `getElementByDocument - Could not find Element in source, located by ${cssQuerySelector}`;
 			LogUtils.debug(failure);
 			throw new Error(failure);
 		}
@@ -38,7 +38,7 @@ export class DomUtils {
 			try {
 				return DomUtils.getElement(pageSource, selector) !== null;
 			} catch (error) {
-				LogUtils.debug(`Trying with next Selector`);
+				LogUtils.debug(`isAtLeastOneDOMElementIsPresent - Trying with next Selector`);
 			}
 		}
 		return false;

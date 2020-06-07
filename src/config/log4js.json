@@ -1,13 +1,27 @@
 {
 	"appenders": {
 		"console": {
-			"type": "console"
+			"type": "console",
+			"category": "console"
+		},
+		"file": {
+			"type": "file",
+			"filename": "./logs/application_log.log",
+			"maxLogSize": 10458760,
+			"backups": 1
 		}
 	},
 	"categories": {
 		"default": {
 			"appenders": [
-				"console"
+				"console",
+				"file"
+			],
+			"level": "DEBUG"
+		},
+		"file": {
+			"appenders": [
+				"file"
 			],
 			"level": "DEBUG"
 		}

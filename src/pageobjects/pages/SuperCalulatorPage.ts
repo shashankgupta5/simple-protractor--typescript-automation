@@ -3,15 +3,15 @@ import { BasePage } from "./BasePage";
 
 export class SuperCalculatorPage extends BasePage {
 
-	private firstNumber: ElementFinder = element(by.model('first'));
-	private secondNumber: ElementFinder = element(by.model('second'));
-	private goButton: ElementFinder = element(by.css('#gobutton'));
-	private result: ElementFinder = element(by.xpath('//div/div/form/h2'));
+	private readonly firstNumber: ElementFinder = element(by.model('first'));
+	private readonly secondNumber: ElementFinder = element(by.model('second'));
+	private readonly goButton: ElementFinder = element(by.css('#gobutton'));
+	private readonly result: ElementFinder = element(by.xpath('//div/div/form/h2'));
 
 	public async addTheseTwoNumbers(firstNumber: number, secondNumber: number, result: number) {
-		await this.firstNumber.sendKeys(firstNumber + '');
-		await this.secondNumber.sendKeys(secondNumber + '');
-		await this.goButton.click();
+		await this.sendKeysToWebElement(this.firstNumber, `${firstNumber}`);
+		await this.sendKeysToWebElement(this.secondNumber, `${secondNumber}`);
+		await this.clickWithJavascript(this.goButton);
 
 		expect<any>(this.result.getText()).toEqual(result + '');
 	}

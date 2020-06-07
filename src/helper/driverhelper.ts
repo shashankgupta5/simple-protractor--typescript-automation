@@ -1,4 +1,4 @@
-import { browser, element, by, ElementFinder, ElementArrayFinder } from "protractor";
+import { browser, element, by, ElementFinder, ElementArrayFinder, $$ } from "protractor";
 import { WaitTool } from "./WaitTool";
 import { DomUtils } from "../utils/DomUtils";
 import { LogUtils } from "../utils/LogUtils";
@@ -36,61 +36,102 @@ export abstract class DriverHelper extends WaitTool {
 		return pageSource.indexOf(text) > -1;
 	}
 
-	public isElementInDOM = async (cssSelector: string): Promise<boolean> => {
+	protected isElementInDOM = async (cssSelector: string): Promise<boolean> => {
 		try {
 			await this.getDOMElement(cssSelector);
-			LogUtils.debug(`DOM Element FOUND with selector of ${cssSelector}`);
+			LogUtils.debug(`isElementInDOM - DOM Element FOUND with selector of ${cssSelector}`);
 			return true;
 		} catch (error) {
-			LogUtils.debug(`DOM Element NOT FOUND with selector of ${cssSelector}`);
+			LogUtils.debug(`isElementInDOM - DOM Element NOT FOUND with selector of ${cssSelector}`);
 			return false;
 		}
 	}
 
-	public getDOMElement = async (cssSelector: string): Promise<Element | null> => {
-		let pageSource = await browser.getPageSource();
-		return DomUtils.getElement(pageSource, cssSelector);
-	}
-
-	public isElementVisible = async (cssSelector: string): Promise<boolean> => {
+	protected isElementDisplayed = async (cssSelector: string): Promise<boolean> => {
 		this.changeImplicitWait(2000);
 		try {
-			let webElement: ElementFinder = element(by.cssSelector(cssSelector));
-			LogUtils.debug(`WebElement FOUND with selector of ${cssSelector}`);
-			return webElement.isDisplayed();
+			let webElement: ElementFinder = this.getElementBySelector(cssSelector);
+			LogUtils.debug(`isElementDisplayed - WebElement FOUND with selector of ${cssSelector}`);
+			return await webElement.isDisplayed();
 		} catch (error) {
-			LogUtils.debug(`WebElement NOT FOUND with selector of ${cssSelector}`);
+			LogUtils.debug(`isElementDisplayed - WebElement NOT FOUND with selector of ${cssSelector}`);
 			return false;
 		} finally {
 			this.restoreImplicitWait();
 		}
 	}
 
-	public getElementsBySelector = async (cssSelector: string): Promise<any> => {
-		let webElements: any | ElementArrayFinder = await element.all(by.cssSelector(cssSelector));
+	protected isElementInteractable = async (cssSelector: string): Promise<boolean> => {
+		this.changeImplicitWait(2000);
+		try {
+			let webElement: ElementFinder = this.getElementBySelector(cssSelector);
+			LogUtils.debug(`isElementInteractable - WebElement FOUND with selector of ${cssSelector}`);
+			return await webElement.isDisplayed() && await webElement.isEnabled();
+		} catch (error) {
+			LogUtils.debug(`isElementInteractable - WebElement NOT FOUND with selector of ${cssSelector}`);
+			return false;
+		} finally {
+			this.restoreImplicitWait();
+		}
+	}
+
+	protected getDOMElement = async (cssSelector: string): Promise<Element | null> => {
+		let pageSource = await browser.getPageSource();
+		return DomUtils.getElement(pageSource, cssSelector);
+	}
+
+	protected getElementsBySelector = async (cssSelector: string): Promise<ElementArrayFinder | any[]> => {
+		let webElements: ElementArrayFinder | any[] = await $$(cssSelector);
+		LogUtils.debug(`getElementsBySelector - Found ${webElements.length} by locator ${cssSelector}`)
 		return webElements;
+	}
+
+	protected async sendKeysToWebElementBySelector(cssSelector: string, text: string) {
+		let webElement: ElementFinder = this.getElementBySelector(cssSelector);
+		await this.sendKeysToWebElement(webElement, text);
+	}
+
+	protected async sendKeysToWebElement(webElement: ElementFinder, text: string) {
+		await webElement.clear();
+		await webElement.sendKeys(text);
+	}
+
+	protected getWebElementTextBySelector = async (cssSelector: string): Promise<string> => {
+		return this.getElementBySelector(cssSelector).getText();
+	}
+
+	private getElementBySelector(cssSelector: string): ElementFinder {
+		return element(by.css(cssSelector));
+	}
+
+	protected async pauseTestExecution(timeInMillis: number) {
+		await browser.sleep(timeInMillis);
 	}
 
 	//=====
 	// Page-related actions
 	//=====
 
-	public getPageText = async (): Promise<String | null> => {
+	protected getPageText = async (): Promise<String | null> => {
 		return (await this.getPageBody()).textContent;
 	}
 
-	public getPageBody = async (): Promise<HTMLElement> => {
-		return DomUtils.getHTMLStringAsDocument(await browser.getPageSource()).body;
+	protected getPageBody = async (): Promise<HTMLElement> => {
+		return (await this.getPageAsDocument()).body;
 	}
 
-	public failWithErrorAndIncludePageText(message: string) {
-		let text: string = `The Page DOM text was - 
-												${message}
-												${this.getPageText()}`;
+	protected getPageAsDocument = async (): Promise<Document> => {
+		return DomUtils.getHTMLStringAsDocument(await browser.getPageSource());
+	}
+
+	protected async failWithErrorAndIncludePageText(message: string) {
+		let innerHTML: any = (await this.getPageBody()).querySelector('#root')?.innerHTML;
+		let text: string = `${message}. The Page DOM text was - 												
+												${innerHTML}`;
 		return this.failWithMessage(text);
 	}
 
-	public failWithMessage = async (message: string) => {
+	private failWithMessage = async (message: string) => {
 		LogUtils.info(message);
 		throw new Error(message);
 	}

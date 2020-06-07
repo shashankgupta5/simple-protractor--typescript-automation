@@ -2,24 +2,21 @@ import { Config, browser } from "protractor"
 
 export let config: Config = {
 	seleniumAddress: 'http://localhost:4444/wd/hub',
-
 	framework: 'jasmine2',
-
 	capabilities: {
 		browserName: 'chrome',
 		chromeOptions: {
 			args: [
-				'no-sandbox',
-				'--start-maximized',
-				'disable-infobars',
+				"--no-sandbox",
+				"--disable-infobars",
+				"--disable-notifications",
+				"--disable-extensions",
 				"--allow-insecure-localhost",
 				"--ignore-certificate-errors",
-				"--ignore-certificate-errors-spki-list"
+				"--enable-strict-powerful-feature-restrictions"
 			]
-		}
-		// browserName: 'firefox',
-		// marionette: true,
-		// acceptSslCerts : true
+		},
+		acceptInsecureCerts: true,
 	},
 
 	jasmineNodeOpts: {
@@ -30,10 +27,9 @@ export let config: Config = {
 
 	suites: {
 		superCalculatorSuite: ['./specs/supercalculatorspec.js'],
-		// amazonSuite: ['./specs/amazonspec.js'],
-		// allSuite: ['./specs/*.js', './specs/*.js']
+		amazonSuite: ['./specs/amazonspec.js'],
+		allSuite: ['./specs/*.js']
 	},
-
 
 	onPrepare: () => {
 		// Usage = (global as any).isAngularSite(false); // For Non Angular Sites
@@ -43,6 +39,7 @@ export let config: Config = {
 
 		browser.manage().window().maximize();
 		browser.manage().timeouts().implicitlyWait(browser.params.driver_timeout_implicit);
+		browser.manage().timeouts().setScriptTimeout(browser.params.driver_timeout_implicit);
 
 		// Usage to set another global file outside here. Add module.exports : {} to a separate file
 		// Usage in ts file => browser.appGlobal.super_calculator_base_url;
@@ -51,7 +48,7 @@ export let config: Config = {
 		var Jasmine2HtmlReporter = require('protractor-jasmine2-html-reporter');
 		jasmine.getEnv().addReporter(new Jasmine2HtmlReporter({
 			savePath: 'results',
-			takeScreenshotsOnlyOnFailures: true
+			takeScreenshots: true
 		}));
 	},
 
@@ -61,5 +58,4 @@ export let config: Config = {
 		driver_timeout_explicit: 10000,
 		driver_timeout_implicit: 5000
 	}
-
 }

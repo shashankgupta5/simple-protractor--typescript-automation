@@ -1,4 +1,4 @@
-log/*
+logs/*
 results/*
 node_modules/*
 out/*

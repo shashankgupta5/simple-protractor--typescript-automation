@@ -1,4 +1,4 @@
-import { browser, element, until, ExpectedConditions, by, ElementFinder } from "protractor";
+import { browser, ExpectedConditions, ElementFinder } from "protractor";
 import { DomUtils } from "../utils/DomUtils";
 import { LogUtils } from "../utils/LogUtils";
 
@@ -6,98 +6,100 @@ const TIMEOUT: number = browser.params.driver_timeout_explicit;
 
 export abstract class WaitTool {
 
-	public waitForElementToBeVisible = async (webElement: ElementFinder) => {
+	// ==========
+	// General WebElement Helper - Can be used in cases where element located by other than CSS selector.
+	// ==========
+
+	protected async waitForElementToBeVisible(webElement: ElementFinder): Promise<any> {
 		return await browser.wait(ExpectedConditions.visibilityOf(webElement), TIMEOUT);
 	}
 
-	public waitForElementToBeVisibleBySelector = async (cssSelector: string) => {
-		let webElement = element(by.cssSelector(cssSelector));
-		return await browser.wait(ExpectedConditions.visibilityOf(webElement), TIMEOUT);
+	protected async waitAndClickWebElement(webElement: ElementFinder) {
+		(await this.waitForElementToBeVisible(webElement)).click();
 	}
 
-	public clickWithJavascriptBySelector = async (cssSelector: string) => {
-		await browser.executeScript("document.querySelector(arguments[0]).click();", cssSelector);
-	}
-
-	public clickWithJavascript = async (webElement: ElementFinder) => {
+	protected clickWithJavascript = async (webElement: ElementFinder) => {
 		await browser.executeScript("arguments[0].click();", webElement);
 	}
 
-	public waitAndClickWithJavascript = async (webElement: ElementFinder) => {
-		await this.waitForElementToBeVisible(webElement);
-		await this.clickWithJavascript(webElement);
-	}
-
-	public waitAndClickWithJavascriptBySelector = async (cssSelector: string) => {
-		await this.waitForElementToBeVisibleBySelector(cssSelector);
-		await this.clickWithJavascriptBySelector(cssSelector);
-	}
-
-	public waitAndClickDOMElementWithJavascript = async (cssSelector: string) => {
-		await this.waitForDOMElementToBePresent(cssSelector);
-		await this.clickWithJavascriptBySelector(cssSelector);
-	}
-
-	public waitAndSendKeys = async (webElement: ElementFinder, text: string) => {
+	protected async waitAndSendKeys(webElement: ElementFinder, text: string) {
 		await this.waitForElementToBeVisible(webElement);
 		await webElement.clear();
 		await webElement.sendKeys(text);
 	}
 
-	public waitForDOMElementToBePresent = async (cssSelector: string) => {
+	protected waitAndGetText = async (webElement: ElementFinder): Promise<string> => {
+		await this.waitForElementToBeVisible(webElement);
+		return await webElement.getText();
+	}
+
+	// ==========
+	// General Helper - Can be used in cases where element needs to be find by CSS selector.
+	// ==========
+
+	protected clickWithJavascriptBySelector = async (cssSelector: string) => {
+		try {
+			await browser.executeScript("document.querySelector(arguments[0]).click();", cssSelector);
+			LogUtils.debug(`Found and clicked element by selector ${cssSelector}`);
+		} catch (err) {
+			LogUtils.debug(`Element not found and henced not clicked by selector ${cssSelector}`);
+		}
+	}
+
+	protected waitAndClickDOMElementWithJavascript = async (cssSelector: string) => {
+		await this.waitForDOMElementToBePresent(cssSelector);
+		await this.clickWithJavascriptBySelector(cssSelector);
+	}
+
+	protected waitForDOMElementToBePresent = async (cssSelector: string) => {
 		let domElementIsPresent = async () => {
 			try {
 				let pageSource: string = await browser.getPageSource();
 				if (DomUtils.getElement(pageSource, cssSelector) != null) {
-					LogUtils.debug(`DOM Element is now Present`);
+					LogUtils.debug(`waitForDOMElementToBePresent - DOM Element is now Present, selector is ${cssSelector}`);
 					return true;
 				}
 			} catch (error) {
-				LogUtils.debug(`DOM Element is not Present`);
+				LogUtils.debug(`waitForDOMElementToBePresent - DOM Element is not Present, selector is ${cssSelector}`);
 				return false;
 			}
 		};
 		await browser.wait(domElementIsPresent, TIMEOUT);
 	}
 
-	public waitForDOMElementToBeHidden = async (cssSelector: string) => {
+	protected waitForDOMElementToBeHidden = async (cssSelector: string) => {
 		let elementToBeHidden = async () => {
 			try {
 				let dom: string = await browser.getPageSource()
-				if (DomUtils.getElement(dom, cssSelector) == null) {
-					LogUtils.debug(`DOM Element was hidden now`);
-					return true;
+				if (DomUtils.getElement(dom, cssSelector) != null) {
+					LogUtils.debug(`waitForDOMElementToBeHidden - DOM Element is not hidden, selector is ${cssSelector}`);
+					return false;
 				}
-				return false;
 			}
 			catch (err) {
-				LogUtils.debug(`DOM Element is not hidden`);
+				LogUtils.debug(`waitForDOMElementToBeHidden - DOM Element is hidden now, selector is ${cssSelector}`);
 				return true;
 			}
+			return true;
 		};
 
 		await browser.wait(elementToBeHidden, TIMEOUT);
 	}
 
-	public waitAndGetText = async (webElement: ElementFinder): Promise<string> => {
-		await this.waitForElementToBeVisible(webElement);
-		return await webElement.getText();
-	}
-
-	public waitForDOMElementAndGetText = async (cssSelector: string): Promise<string | null> => {
+	protected waitForDOMElementAndGetText = async (cssSelector: string): Promise<string | null> => {
 		let domElementIsPresentAndGetText = async () => {
 			try {
 				let pageSource: string = await browser.getPageSource();
 				return DomUtils.getElementText(pageSource, cssSelector);
 			} catch (error) {
-				LogUtils.debug(`Element text not found by selector ${cssSelector}`);
+				LogUtils.debug(`waitForDOMElementAndGetText - Element not found by selector ${cssSelector}`);
 				return '';
 			}
 		};
 		return await browser.wait(domElementIsPresentAndGetText, TIMEOUT);
 	}
 
-	public waitForAtLeastOneDOMElementToBePresent = async (selectors: string[]) => {
+	protected waitForAtLeastOneDOMElementToBePresent = async (selectors: string[]) => {
 		let atLeastOneDOMElementIsPresent = async () => {
 			let pageSource: string = await browser.getPageSource();
 			return DomUtils.isAtLeastOneDOMElementIsPresent(pageSource, selectors);
@@ -105,20 +107,20 @@ export abstract class WaitTool {
 		await browser.wait(atLeastOneDOMElementIsPresent, TIMEOUT);
 	}
 
-	public waitUntilJSReturnsTrue = async (javascript: string) => {
+	protected waitUntilJSReturnsTrue = async (javascript: string) => {
 		let jsReturnsTrue = async () => {
 			try {
 				return await browser.executeScript(javascript);
 			}
 			catch (err) {
-				LogUtils.debug(`JS didn't return true yet!`);
+				LogUtils.debug(`waitUntilJSReturnsTrue - JS didn't return true yet!`);
 				return false;
 			}
 		};
 		await browser.wait(jsReturnsTrue, TIMEOUT);
 	}
 
-	public waitUntilPageLoaded = async () => {
+	protected waitUntilPageLoaded = async () => {
 		let jsReturnsTrueAndDomStopsUpdating = async () => {
 			try {
 				let originalDOM: string = await browser.getPageSource();
