@@ -1,4 +1,7 @@
-import { Config, browser } from "protractor"
+import { Config, browser } from 'protractor';
+import { SpecReporter, StacktraceOption } from 'jasmine-spec-reporter';
+
+declare const allure: any;
 
 export let config: Config = {
 	seleniumAddress: 'http://localhost:4444/wd/hub',
@@ -45,11 +48,53 @@ export let config: Config = {
 		// Usage in ts file => browser.appGlobal.super_calculator_base_url;
 		// browser.appGlobal = require('');
 
-		var Jasmine2HtmlReporter = require('protractor-jasmine2-html-reporter');
-		jasmine.getEnv().addReporter(new Jasmine2HtmlReporter({
-			savePath: 'results',
-			takeScreenshots: true
+		jasmine.getEnv().clearReporters();
+		jasmine.getEnv().addReporter(new SpecReporter({
+			suite: {
+				displayNumber: true
+			},
+			spec: {
+				displayStacktrace: StacktraceOption.PRETTY,
+				displayErrorMessages: true,
+				displaySuccessful: true,
+				displayFailed: true,
+				displayPending: true,
+				displayDuration: true
+			},
+			summary: {
+				displayErrorMessages: true,
+				displayStacktrace: StacktraceOption.PRETTY,
+				displaySuccessful: true,
+				displayFailed: true,
+				displayPending: true,
+				displayDuration: true,
+			},
+			colors: {
+				enabled: true,
+				successful: 'green',
+				failed: 'red',
+				pending: 'yellow'
+			},
+			prefixes: {
+				successful: '✓ ',
+				failed: '✗ ',
+				pending: '* '
+			},
+			customProcessors: []
 		}));
+
+		var AllureReporter = require('jasmine-allure-reporter');
+		jasmine.getEnv().addReporter(new AllureReporter({
+			resultsDir: 'results'
+		}));
+		jasmine.getEnv().afterEach(function (done) {
+			browser.takeScreenshot().then(function (png) {
+				allure.createAttachment('Screenshot', function () {
+					return new Buffer(png, 'base64')
+				}, 'image/png')();
+				done();
+			})
+		});
 	},
 
 	params: {
