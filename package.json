@@ -7,7 +7,7 @@
 		"build": "tsc",
 		"clean": "rimraf out/* logs/* results/*",
 		"pretest": "npm run clean && npm run build",
-		"test": "protractor out/conf.js --suite allSuite",
+		"test": "protractor out/conf.js --suite superCalculatorSuite",
 		"posttest": "allure generate ./results/ --clean --output ./results/report/ || true"
 	},
 	"author": "Shashank Gupta",

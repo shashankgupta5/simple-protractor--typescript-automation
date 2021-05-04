@@ -49,7 +49,7 @@ export let config: Config = {
 		// browser.appGlobal = require('');
 
 		jasmine.getEnv().clearReporters();
-		jasmine.getEnv().addReporter(new SpecReporter({
+		/*jasmine.getEnv().addReporter(new SpecReporter({
 			suite: {
 				displayNumber: true
 			},
@@ -81,7 +81,7 @@ export let config: Config = {
 				pending: '* '
 			},
 			customProcessors: []
-		}));
+		}));*/
 
 		var AllureReporter = require('jasmine-allure-reporter');
 		jasmine.getEnv().addReporter(new AllureReporter({

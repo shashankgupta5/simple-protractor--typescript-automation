@@ -1,5 +1,5 @@
-import { JSDOM } from 'jsdom';
-import { LogUtils } from './LogUtils';
+import { JSDOM } from "jsdom";
+import { LogUtils } from "./logutils";
 
 export class DomUtils {
 

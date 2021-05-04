@@ -1,5 +1,5 @@
-import { browser, element, by, ElementFinder } from "protractor";
-import { BasePage } from "./BasePage";
+import { ElementFinder, element, by } from "protractor";
+import { BasePage } from "./basepage";
 
 export class SuperCalculatorPage extends BasePage {
 

@@ -1,10 +1,10 @@
 import { browser } from "protractor";
-import { LogUtils } from "../../utils/LogUtils";
-import { DriverHelper } from "../../helper/DriverHelper";
+import { DriverHelper } from "../../helper/driverhelper";
+import { LogUtils } from "../../utils/logutils";
 
 export abstract class BasePage extends DriverHelper {
 
-	public async verify(title: string) {
+	public async verifyTitle(title: string) {
 		await this.waitUntilPageLoaded();
 
 		let someTitle = await browser.getTitle();

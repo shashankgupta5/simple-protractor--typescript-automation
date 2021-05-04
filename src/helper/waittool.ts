@@ -1,6 +1,6 @@
-import { browser, ExpectedConditions, ElementFinder } from "protractor";
-import { DomUtils } from "../utils/DomUtils";
-import { LogUtils } from "../utils/LogUtils";
+import { browser, ElementFinder, ExpectedConditions } from "protractor";
+import { DomUtils } from "../utils/domutils";
+import { LogUtils } from "../utils/logutils";
 
 const TIMEOUT: number = browser.params.driver_timeout_explicit;
 

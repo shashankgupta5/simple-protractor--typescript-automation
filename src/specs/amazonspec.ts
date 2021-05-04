@@ -1,5 +1,5 @@
 import { browser } from "protractor";
-import { AmazonPage } from "../pageobjects/pages/AmazonPage";
+import { AmazonPage } from "../pageobjects/pages/amazonpage";
 
 describe('Amazon Tests - ', () => {
 
@@ -11,7 +11,7 @@ describe('Amazon Tests - ', () => {
 	});
 
 	it('to verify that page title is correct', async () => {
-		await amazonPage.verify('Amazon');
+		await amazonPage.verifyTitle('Amazon');
 	});
 
 });

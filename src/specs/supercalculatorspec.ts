@@ -11,7 +11,7 @@ describe('Super Calculator Tests - ', () => {
 	});
 
 	it('tp verify that page title is correct', async () => {
-		await superCalculatorPage.verify('Super');
+		await superCalculatorPage.verifyTitle('Super');
 	});
 
 	it('to verify it adds two number correctly', async () => {

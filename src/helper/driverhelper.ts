@@ -1,7 +1,7 @@
-import { browser, element, by, ElementFinder, ElementArrayFinder, $$ } from "protractor";
-import { WaitTool } from "./WaitTool";
-import { DomUtils } from "../utils/DomUtils";
-import { LogUtils } from "../utils/LogUtils";
+import { browser, ElementFinder, ElementArrayFinder, $$, element, by } from "protractor";
+import { DomUtils } from "../utils/domutils";
+import { LogUtils } from "../utils/logutils";
+import { WaitTool } from "./waittool";
 
 export abstract class DriverHelper extends WaitTool {
 
